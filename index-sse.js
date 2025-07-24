@@ -5,56 +5,57 @@ import { z } from "zod";
 
 const app = express();
 app.use(express.json());
+function factory() {
+  // 1. 新建 MCP Server
+  const server = new McpServer({
+    name: "calculator-service",
+    version: "1.0.0",
+  });
 
-// 1. 新建 MCP Server
-const server = new McpServer({
-  name: "calculator-service",
-  version: "1.0.0",
-});
-
-// 2. 注册四个工具：add / sub / mul / div
-const defineCalcTool = (op, symbol) =>
-  server.registerTool(
-    op,
-    {
-      title: `${op} tool`,
-      description: `${op} two numbers`,
-      inputSchema: {
-        a: z.number(),
-        b: z.number(),
+  // 2. 注册四个工具：add / sub / mul / div
+  const defineCalcTool = (op, symbol) =>
+    server.registerTool(
+      op,
+      {
+        title: `${op} tool`,
+        description: `${op} two numbers`,
+        inputSchema: {
+          a: z.number(),
+          b: z.number(),
+        },
       },
-    },
-    async ({ a, b }) => {
-      let result;
-      switch (symbol) {
-        case "+":
-          result = a + b;
-          break;
-        case "-":
-          result = a - b;
-          break;
-        case "*":
-          result = a * b;
-          break;
-        case "/":
-          if (b === 0) {
-            return {
-              content: [{ type: "text", text: "Division by zero" }],
-              isError: true,
-            };
-          }
-          result = a / b;
-          break;
-      }
-      return { content: [{ type: "text", text: String(result) }] };
-    },
-  );
+      async ({ a, b }) => {
+        let result;
+        switch (symbol) {
+          case "+":
+            result = a + b;
+            break;
+          case "-":
+            result = a - b;
+            break;
+          case "*":
+            result = a * b;
+            break;
+          case "/":
+            if (b === 0) {
+              return {
+                content: [{ type: "text", text: "Division by zero" }],
+                isError: true,
+              };
+            }
+            result = a / b;
+            break;
+        }
+        return { content: [{ type: "text", text: String(result) }] };
+      },
+    );
 
-defineCalcTool("add", "+");
-defineCalcTool("sub", "-");
-defineCalcTool("mul", "*");
-defineCalcTool("div", "/");
-
+  defineCalcTool("add", "+");
+  defineCalcTool("sub", "-");
+  defineCalcTool("mul", "*");
+  defineCalcTool("div", "/");
+  return server;
+}
 // 3. 存储 SSE 会话
 const transports = new Map();
 
@@ -64,7 +65,7 @@ app.get("/sse", async (req, res) => {
   transports.set(transport.sessionId, transport);
 
   res.on("close", () => transports.delete(transport.sessionId));
-
+  const server = factory();
   await server.connect(transport);
 });
 
