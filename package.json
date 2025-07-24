@@ -5,7 +5,10 @@
   "description": "A simple MCP calculator supporting addition, subtraction, multiplication and division",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start:sse": "node index-sse.js",
+
+    "start:stdio": "node index-stdio.js",
+    "start:streamable": "node index-streamable-http.js"
   },
   "keywords": [
     "mcp",

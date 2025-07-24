@@ -84,4 +84,6 @@ app.listen(PORT, (err) => {
   if (err) return console.error("Failed to start HTTP server:", err);
 
   console.log(`MCP calc server listening on http://localhost:${PORT}`);
+
+  console.log(`MCP endpoint: http://localhost:${PORT}/sse`);
 });

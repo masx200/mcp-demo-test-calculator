@@ -66,6 +66,49 @@ PORT=3001 node index-sse.js
 curl http://localhost:3000/sse
 ```
 
+##### 2. Streamable HTTP 模式运行（新版）
+
+Streamable HTTP 模式基于MCP官方Streamable HTTP协议，使用真正的StreamableHTTPServerTransport实现，支持完整的会话管理和状态持久化。
+
+**启动服务：**
+
+```bash
+npm run start:streamable
+```
+
+**或直接使用：**
+
+```bash
+node index-streamable-http.js
+```
+
+**或指定端口：**
+
+```bash
+PORT=3001 node index-streamable-http.js
+```
+
+**服务启动后：**
+
+- 服务地址：http://localhost:3000
+- MCP 端点：http://localhost:3000/mcp
+<!-- - 健康检查：http://localhost:3000/health -->
+
+**特性：**
+- 会话管理（sessionId）
+- 状态持久化
+- 服务器到客户端通知
+- 会话终止
+- 健康检查
+
+**测试连接：**
+
+```bash
+node test-streamable-mcp.js
+```
+
+然后访问：http://localhost:3001/test
+
 ##### 2. stdio 模式运行
 
 stdio 模式通过标准输入输出进行通信，适用于本地集成场景。
@@ -99,6 +142,22 @@ mcp-calc
       "description": "A simple calculator service supporting addition, subtraction, multiplication and division",
       "baseUrl": "http://localhost:3000/sse",
       "url": "http://localhost:3000/sse"
+    }
+  }
+}
+```
+
+**Streamable HTTP 模式配置（新版）：**
+
+```json
+{
+  "mcpServers": {
+    "calculator-streamable-http": {
+      "isActive": true,
+      "name": "calculator-service",
+      "type": "streamable",
+      "description": "A simple calculator service supporting addition, subtraction, multiplication and division",
+      "url": "http://localhost:3000/mcp"
     }
   }
 }
@@ -166,11 +225,13 @@ mcp-calc
 
 ```
 mcp-demo-test/
-├── index-sse.js      # SSE模式服务器
-├── index-stdio.js    # stdio模式服务器
-├── package.json      # 项目配置
-├── LICENSE          # 许可证
-└── README.md        # 项目文档
+├── index-sse.js              # SSE模式服务器（旧版）
+├── index-stdio.js           # stdio模式服务器
+├── index-streamable-http.js # Streamable HTTP模式服务器（新版）
+├── test-streamable-mcp.js   # Streamable HTTP测试脚本
+├── package.json             # 项目配置
+├── LICENSE                  # 许可证
+└── README.md                # 项目文档
 ```
 
 **依赖说明：**
