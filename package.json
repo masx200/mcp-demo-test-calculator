@@ -1,0 +1,25 @@
+{
+  "type": "module",
+  "name": "@masx200/mcp-calculator",
+  "version": "1.0.0",
+  "description": "A simple MCP calculator supporting addition, subtraction, multiplication and division",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "mcp",
+    "calculator",
+    "math"
+  ],
+  "author": "masx200",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.16.0",
+    "express": "^5.1.0",
+    "zod": "^3.23.8"
+  },
+  "bin": {
+    "mcp-calc": "./index.js"
+  }
+}
