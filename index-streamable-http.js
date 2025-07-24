@@ -9,7 +9,7 @@ function factory() {
   // Create MCP server
   const server = new McpServer({
     name: "calculator-service",
-    version: "1.0.0"
+    version: "1.0.0",
   });
 
   // Register calculator tools
@@ -78,9 +78,9 @@ app.use(express.json());
 const transports = {};
 
 // Handle POST requests for client-to-server communication
-app.post('/mcp', async (req, res) => {
+app.post("/mcp", async (req, res) => {
   // Check for existing session ID
-  const sessionId = req.headers['mcp-session-id'];
+  const sessionId = req.headers["mcp-session-id"];
   let transport;
 
   if (sessionId && transports[sessionId]) {
@@ -114,10 +114,10 @@ app.post('/mcp', async (req, res) => {
   } else {
     // Invalid request
     res.status(400).json({
-      jsonrpc: '2.0',
+      jsonrpc: "2.0",
       error: {
         code: -32000,
-        message: 'Bad Request: No valid session ID provided',
+        message: "Bad Request: No valid session ID provided",
       },
       id: null,
     });
@@ -130,9 +130,9 @@ app.post('/mcp', async (req, res) => {
 
 // Reusable handler for GET and DELETE requests
 const handleSessionRequest = async (req, res) => {
-  const sessionId = req.headers['mcp-session-id'];
+  const sessionId = req.headers["mcp-session-id"];
   if (!sessionId || !transports[sessionId]) {
-    res.status(400).send('Invalid or missing session ID');
+    res.status(400).send("Invalid or missing session ID");
     return;
   }
 
@@ -141,10 +141,10 @@ const handleSessionRequest = async (req, res) => {
 };
 
 // Handle GET requests for server-to-client notifications via SSE
-app.get('/mcp', handleSessionRequest);
+app.get("/mcp", handleSessionRequest);
 
 // Handle DELETE requests for session termination
-app.delete('/mcp', handleSessionRequest);
+app.delete("/mcp", handleSessionRequest);
 
 // // Health check endpoint
 // app.get('/health', (req, res) => {
@@ -162,7 +162,9 @@ app.on("error", (err) => console.error("Failed to start HTTP server:", err));
 app.listen(PORT, (err) => {
   if (err) return console.error("Failed to start HTTP server:", err);
 
-  console.log(`MCP calculator streamable HTTP server listening on http://localhost:${PORT}`);
+  console.log(
+    `MCP calculator streamable HTTP server listening on http://localhost:${PORT}`,
+  );
   console.log(`MCP endpoint: http://localhost:${PORT}/mcp`);
   // console.log(`Health check: http://localhost:${PORT}/health`);
 });

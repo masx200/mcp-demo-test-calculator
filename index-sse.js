@@ -64,7 +64,7 @@ app.get("/sse", async (req, res) => {
   const transport = new SSEServerTransport("/messages", res);
   transports.set(transport.sessionId, transport);
   const sessionId = transport.sessionId;
- console.log(`New session initialized: ${sessionId}`);
+  console.log(`New session initialized: ${sessionId}`);
   res.on("close", () => transports.delete(transport.sessionId));
   const server = factory();
   await server.connect(transport);

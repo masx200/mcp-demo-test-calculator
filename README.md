@@ -2,7 +2,9 @@
 
 #### 介绍
 
-这是一个基于 MCP（Model Context Protocol）协议的计算器服务示例项目，提供了加法、减法、乘法和除法四种基本数学运算功能。项目支持两种运行模式：SSE（Server-Sent Events）模式和 stdio 模式，可作为 MCP 服务器与 AI 助手集成使用。
+这是一个基于 MCP（Model Context
+Protocol）协议的计算器服务示例项目，提供了加法、减法、乘法和除法四种基本数学运算功能。项目支持两种运行模式：SSE（Server-Sent
+Events）模式和 stdio 模式，可作为 MCP 服务器与 AI 助手集成使用。
 
 #### 软件架构
 
@@ -68,7 +70,8 @@ curl http://localhost:3000/sse
 
 ##### 2. Streamable HTTP 模式运行（新版）
 
-Streamable HTTP 模式基于MCP官方Streamable HTTP协议，使用真正的StreamableHTTPServerTransport实现，支持完整的会话管理和状态持久化。
+Streamable HTTP 模式基于MCP官方Streamable
+HTTP协议，使用真正的StreamableHTTPServerTransport实现，支持完整的会话管理和状态持久化。
 
 **启动服务：**
 
@@ -92,9 +95,11 @@ PORT=3001 node index-streamable-http.js
 
 - 服务地址：http://localhost:3000
 - MCP 端点：http://localhost:3000/mcp
+
 <!-- - 健康检查：http://localhost:3000/health -->
 
 **特性：**
+
 - 会话管理（sessionId）
 - 状态持久化
 - 服务器到客户端通知
