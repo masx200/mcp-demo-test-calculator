@@ -70,8 +70,8 @@ curl http://localhost:3000/sse
 
 ##### 2. Streamable HTTP 模式运行（新版）
 
-Streamable HTTP 模式基于MCP官方Streamable
-HTTP协议，使用真正的StreamableHTTPServerTransport实现，支持完整的会话管理和状态持久化。
+Streamable HTTP 模式基于 MCP 官方 Streamable HTTP 协议，使用真正的
+StreamableHTTPServerTransport 实现，支持完整的会话管理和状态持久化。
 
 **启动服务：**
 
@@ -262,3 +262,9 @@ nodemon index-sse.js
 2. **跨域问题**：SSE 模式已处理跨域请求
 3. **错误处理**：所有运算都有适当的错误处理机制
 4. **性能优化**：服务为单实例运行，适合个人或小团队使用
+
+### 把 stdio 协议转为 streamable-http 协议
+
+```
+node D:\github\mcp-demo-test-calculator\bridge-streamable.js "cmd" "/c"  "npx" "-y"  "@gitee/mcp-gitee@latest" -token <GITEE_ACCESS_TOKEN>
+```
