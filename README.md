@@ -277,7 +277,7 @@ node D:\github\mcp-demo-test-calculator\bridge-streamable.js "cmd" "/c"  "npx" "
 node bridge-streamable.js node index-stdio.js
 ```
 
-##### API Token 认证（可选）
+#####  HTTP API Token 认证（可选）
 
 可以通过设置环境变量`BRIDGE_API_TOKEN`来启用 HTTP API Token 认证：
 
