@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-import express from "express";
-import { randomUUID } from "node:crypto";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
+import express from "express";
+import { randomUUID } from "node:crypto";
 import { z } from "zod";
 function factory() {
   // Create MCP server
@@ -75,7 +75,7 @@ const app = express();
 app.use(express.json());
 
 // Map to store transports by session ID
-const transports = {};
+const transports = new Map();
 
 // Handle POST requests for client-to-server communication
 app.post("/mcp", async (req, res) => {
@@ -83,16 +83,16 @@ app.post("/mcp", async (req, res) => {
   const sessionId = req.headers["mcp-session-id"];
   let transport;
 
-  if (sessionId && transports[sessionId]) {
+  if (sessionId && transports.has(sessionId)) {
     // Reuse existing transport
-    transport = transports[sessionId];
+    transport = transports.get(sessionId);
   } else if (!sessionId && isInitializeRequest(req.body)) {
     // New initialization request
     transport = new StreamableHTTPServerTransport({
       sessionIdGenerator: () => randomUUID(),
       onsessioninitialized: (sessionId) => {
         // Store the transport by session ID
-        transports[sessionId] = transport;
+        transports.set(transport.sessionId, transport);
         console.log(`New session initialized: ${sessionId}`);
       },
       // DNS rebinding protection is disabled by default for backwards compatibility
@@ -105,7 +105,7 @@ app.post("/mcp", async (req, res) => {
     transport.onclose = () => {
       if (transport.sessionId) {
         console.log(`Session closed: ${transport.sessionId}`);
-        delete transports[transport.sessionId];
+        transports.delete(transport.sessionId);
       }
     };
     const server = factory();
@@ -131,12 +131,12 @@ app.post("/mcp", async (req, res) => {
 // Reusable handler for GET and DELETE requests
 const handleSessionRequest = async (req, res) => {
   const sessionId = req.headers["mcp-session-id"];
-  if (!sessionId || !transports[sessionId]) {
+  if (!sessionId || !transports.has(sessionId)) {
     res.status(400).send("Invalid or missing session ID");
     return;
   }
 
-  const transport = transports[sessionId];
+  const transport = transports.get(sessionId);
   await transport.handleRequest(req, res);
 };
 
