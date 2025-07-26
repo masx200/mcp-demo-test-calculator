@@ -66,11 +66,48 @@ async function factory() {
 
 // ---------- 4. 启动 Streamable HTTP Server ----------
 const app = express();
+
+// API Token认证中间件
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1]; // Bearer TOKEN
+
+  const expectedToken = process.env.BRIDGE_API_TOKEN;
+
+  // 如果设置了环境变量BRIDGE_API_TOKEN，则进行验证
+  if (expectedToken) {
+    if (!token || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({
+        jsonrpc: "2.0",
+        error: {
+          code: -32001,
+          message: "Access token required",
+        },
+        id: null,
+      });
+    }
+
+    if (token !== expectedToken) {
+      return res.status(403).json({
+        jsonrpc: "2.0",
+        error: {
+          code: -32002,
+          message: "Invalid access token",
+        },
+        id: null,
+      });
+    }
+  }
+
+  next();
+};
+
 app.use(cors({
   exposedHeaders: ["Mcp-Session-Id"],
-  allowedHeaders: ["Content-Type", "mcp-session-id"],
+  allowedHeaders: ["Content-Type", "mcp-session-id", "Authorization"],
 }));
 app.use(express.json());
+app.use(authenticateToken);
 
 const transports = new Map(); // sessionId -> StreamableHTTPServerTransport
 
