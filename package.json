@@ -6,8 +6,8 @@
   "scripts": {
     "start:sse": "node index-sse.js",
     "start:stdio": "node index-stdio.js",
-    "start:streamable": "node index-streamable-http.js",
-    "start:bridge": "node bridge-streamable.js"
+    "start:streamable": "node index-streamable-http.js"
+   
   },
   "keywords": [
     "mcp",

@@ -6,7 +6,7 @@
 
 - 支持基本的四则运算：加法、减法、乘法、除法
 - 支持多种传输协议：stdio、SSE、Streamable HTTP
-- 添加桥接工具 bridge-streamable.js，实现stdio和Streamable HTTP之间的通信
+
 - 完整的MCP协议实现
 
 ### 技术特性
@@ -20,6 +20,6 @@
 - `index-stdio.js` - stdio传输模式服务器
 - `index-sse.js` - SSE传输模式服务器
 - `index-streamable-http.js` - Streamable HTTP传输模式服务器
-- `bridge-streamable.js` - 桥接工具
+
 - `README.md` - 项目文档
 - `package.json` - 项目配置
