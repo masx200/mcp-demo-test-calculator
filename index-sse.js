@@ -8,7 +8,7 @@ app.use(express.json());
 
 app.use(authenticateToken);
 // Token验证中间件
-const authenticateToken = (req, res, next) => {
+async function authenticateToken(req, res, next) {
   const token = process.env.HTTP_API_TOKEN;
   if (!token) {
     return next(); // 未设置token，允许匿名访问
@@ -18,7 +18,7 @@ const authenticateToken = (req, res, next) => {
   const bearerToken = authHeader && authHeader.split(" ")[1];
 
   if (
-    !authHeader.startsWith("Bearer ") ||
+    !authHeader?.startsWith("Bearer ") ||
     !bearerToken ||
     bearerToken !== token
   ) {
@@ -28,7 +28,7 @@ const authenticateToken = (req, res, next) => {
   }
 
   next();
-};
+}
 function factory() {
   // 1. 新建 MCP Server
   const server = new McpServer({
@@ -71,7 +71,7 @@ function factory() {
             break;
         }
         return { content: [{ type: "text", text: String(result) }] };
-      },
+      }
     );
 
   defineCalcTool("add", "+");
@@ -91,6 +91,10 @@ app.get("/sse", authenticateToken, async (req, res) => {
   console.log(`New session initialized: ${sessionId}`);
   res.on("close", () => transports.delete(transport.sessionId));
   const server = factory();
+  transport.onmessage = async (message, extra) => {
+    console.error("message:", JSON.stringify(message, null, 4));
+    console.error("extra:", JSON.stringify(extra, null, 4));
+  };
   await server.connect(transport);
 });
 
@@ -117,7 +121,7 @@ app.listen(PORT, (err) => {
     console.log("HTTP API token authentication enabled,token:", token);
   } else {
     console.log(
-      "HTTP API token authentication disabled (anonymous access allowed)",
+      "HTTP API token authentication disabled (anonymous access allowed)"
     );
   }
 });

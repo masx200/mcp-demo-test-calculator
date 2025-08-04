@@ -22,7 +22,7 @@ function factory() {
     },
     async ({ a, b }) => ({
       content: [{ type: "text", text: String(a + b) }],
-    }),
+    })
   );
 
   server.registerTool(
@@ -34,7 +34,7 @@ function factory() {
     },
     async ({ a, b }) => ({
       content: [{ type: "text", text: String(a - b) }],
-    }),
+    })
   );
 
   server.registerTool(
@@ -46,7 +46,7 @@ function factory() {
     },
     async ({ a, b }) => ({
       content: [{ type: "text", text: String(a * b) }],
-    }),
+    })
   );
 
   server.registerTool(
@@ -66,7 +66,7 @@ function factory() {
       return {
         content: [{ type: "text", text: String(a / b) }],
       };
-    },
+    }
   );
   return server;
 }
@@ -75,7 +75,7 @@ const app = express();
 app.use(express.json());
 app.use(authenticateToken);
 // Token验证中间件
-const authenticateToken = (req, res, next) => {
+async function authenticateToken(req, res, next) {
   const token = process.env.HTTP_API_TOKEN;
   if (!token) {
     return next(); // 未设置token，允许匿名访问
@@ -85,7 +85,7 @@ const authenticateToken = (req, res, next) => {
   const bearerToken = authHeader && authHeader.split(" ")[1];
 
   if (
-    !authHeader.startsWith("Bearer ") ||
+    !authHeader?.startsWith("Bearer ") ||
     !bearerToken ||
     bearerToken !== token
   ) {
@@ -100,7 +100,7 @@ const authenticateToken = (req, res, next) => {
   }
 
   next();
-};
+}
 
 // Map to store transports by session ID
 const transports = new Map();
@@ -135,6 +135,10 @@ app.post("/mcp", authenticateToken, async (req, res) => {
         console.log(`Session closed: ${transport.sessionId}`);
         transports.delete(transport.sessionId);
       }
+    };
+    transport.onmessage = async (message, extra) => {
+      console.error("message:", JSON.stringify(message, null, 4));
+      console.error("extra:", JSON.stringify(extra, null, 4));
     };
     const server = factory();
     // Connect to the MCP server
@@ -181,7 +185,7 @@ app.listen(PORT, (err) => {
   if (err) return console.error("Failed to start HTTP server:", err);
 
   console.log(
-    `MCP calculator streamable HTTP server listening on http://localhost:${PORT}`,
+    `MCP calculator streamable HTTP server listening on http://localhost:${PORT}`
   );
   console.log(`MCP endpoint: http://localhost:${PORT}/mcp`);
 
@@ -190,7 +194,7 @@ app.listen(PORT, (err) => {
     console.log("HTTP API token authentication enabled,token:", token);
   } else {
     console.log(
-      "HTTP API token authentication disabled (anonymous access allowed)",
+      "HTTP API token authentication disabled (anonymous access allowed)"
     );
   }
 });
