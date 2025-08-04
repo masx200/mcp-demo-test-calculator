@@ -53,7 +53,7 @@ node index-sse.js
 **或指定端口：**
 
 ```bash
-PORT=3001 node index-sse.js
+HTTP_API_PORT=3001 node index-sse.js
 ```
 
 **服务启动后：**
@@ -95,8 +95,6 @@ PORT=3001 node index-streamable-http.js
 
 - 服务地址：http://localhost:3000
 - MCP 端点：http://localhost:3000/mcp
-
-<!-- - 健康检查：http://localhost:3000/health -->
 
 **特性：**
 
@@ -244,17 +242,6 @@ mcp-demo-test/
 - `@modelcontextprotocol/sdk`: MCP 协议 SDK
 - `express`: Web 服务器框架
 - `zod`: 数据验证库
-
-**调试模式：**
-
-```bash
-# 查看详细日志
-DEBUG=* node index-sse.js
-
-# 使用nodemon开发
-npm install -g nodemon
-nodemon index-sse.js
-```
 
 #### 注意事项
 

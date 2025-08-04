@@ -1,6 +1,6 @@
-import express from "express";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
+import express from "express";
 import { z } from "zod";
 
 const app = express();
@@ -80,7 +80,7 @@ app.post("/messages", async (req, res) => {
 });
 
 // 6. 启动 HTTP 服务
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.HTTP_API_PORT || 3000;
 app.on("error", (err) => console.error("Failed to start HTTP server:", err));
 app.listen(PORT, (err) => {
   if (err) return console.error("Failed to start HTTP server:", err);

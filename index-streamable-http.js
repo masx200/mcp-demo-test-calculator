@@ -146,18 +146,8 @@ app.get("/mcp", handleSessionRequest);
 // Handle DELETE requests for session termination
 app.delete("/mcp", handleSessionRequest);
 
-// // Health check endpoint
-// app.get('/health', (req, res) => {
-//   res.json({
-//     status: 'healthy',
-//     activeSessions: Object.keys(transports).length,
-//     server: 'calculator-service',
-//     version: '1.0.0'
-//   });
-// });
-
 // Start the server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.HTTP_API_PORT || 3000;
 app.on("error", (err) => console.error("Failed to start HTTP server:", err));
 app.listen(PORT, (err) => {
   if (err) return console.error("Failed to start HTTP server:", err);
@@ -166,5 +156,4 @@ app.listen(PORT, (err) => {
     `MCP calculator streamable HTTP server listening on http://localhost:${PORT}`,
   );
   console.log(`MCP endpoint: http://localhost:${PORT}/mcp`);
-  // console.log(`Health check: http://localhost:${PORT}/health`);
 });
