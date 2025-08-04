@@ -5,6 +5,30 @@ import { z } from "zod";
 
 const app = express();
 app.use(express.json());
+
+app.use(authenticateToken);
+// Token验证中间件
+const authenticateToken = (req, res, next) => {
+  const token = process.env.HTTP_API_TOKEN;
+  if (!token) {
+    return next(); // 未设置token，允许匿名访问
+  }
+
+  const authHeader = req.headers["authorization"];
+  const bearerToken = authHeader && authHeader.split(" ")[1];
+
+  if (
+    !authHeader.startsWith("Bearer ") ||
+    !bearerToken ||
+    bearerToken !== token
+  ) {
+    return res
+      .status(401)
+      .json({ error: "Unauthorized: Invalid or missing token" });
+  }
+
+  next();
+};
 function factory() {
   // 1. 新建 MCP Server
   const server = new McpServer({
@@ -60,7 +84,7 @@ function factory() {
 const transports = new Map();
 
 // 4. 创建 SSE 端点
-app.get("/sse", async (req, res) => {
+app.get("/sse", authenticateToken, async (req, res) => {
   const transport = new SSEServerTransport("/messages", res);
   transports.set(transport.sessionId, transport);
   const sessionId = transport.sessionId;
@@ -71,7 +95,7 @@ app.get("/sse", async (req, res) => {
 });
 
 // 5. 接收客户端 POST 消息
-app.post("/messages", async (req, res) => {
+app.post("/messages", authenticateToken, async (req, res) => {
   const sessionId = req.query.sessionId;
   const transport = transports.get(sessionId);
   if (!transport) return res.status(400).send("Unknown session");
@@ -86,6 +110,14 @@ app.listen(PORT, (err) => {
   if (err) return console.error("Failed to start HTTP server:", err);
 
   console.log(`MCP calc server listening on http://localhost:${PORT}`);
-
   console.log(`MCP endpoint: http://localhost:${PORT}/sse`);
+
+  const token = process.env.HTTP_API_TOKEN;
+  if (token) {
+    console.log("HTTP API token authentication enabled,token:", token);
+  } else {
+    console.log(
+      "HTTP API token authentication disabled (anonymous access allowed)",
+    );
+  }
 });

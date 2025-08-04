@@ -56,6 +56,12 @@ node index-sse.js
 HTTP_API_PORT=3001 node index-sse.js
 ```
 
+**或同时指定端口和访问令牌：**
+
+```bash
+HTTP_API_PORT=3001 HTTP_API_TOKEN=your-secret-token node index-sse.js
+```
+
 **服务启动后：**
 
 - 服务地址：http://localhost:3000
@@ -88,7 +94,13 @@ node index-streamable-http.js
 **或指定端口：**
 
 ```bash
-PORT=3001 node index-streamable-http.js
+HTTP_API_PORT=3001 node index-streamable-http.js
+```
+
+**或同时指定端口和访问令牌：**
+
+```bash
+HTTP_API_PORT=3001 HTTP_API_TOKEN=your-secret-token node index-streamable-http.js
 ```
 
 **服务启动后：**
@@ -249,3 +261,23 @@ mcp-demo-test/
 2. **跨域问题**：SSE 模式已处理跨域请求
 3. **错误处理**：所有运算都有适当的错误处理机制
 4. **性能优化**：服务为单实例运行，适合个人或小团队使用
+
+#### 环境变量配置
+
+项目支持以下环境变量进行配置：
+
+- **HTTP_API_PORT**: 服务端口配置（默认：3000）
+
+  - SSE 模式：`HTTP_API_PORT=3001 node index-sse.js`
+  - Streamable HTTP 模式：`HTTP_API_PORT=3001 node index-streamable-http.js`
+
+- **HTTP_API_TOKEN**: HTTP Bearer Token 访问验证（可选）
+  - 设置后，所有 HTTP 请求需要在 Authorization 头中包含：
+    ```
+    Authorization: Bearer your-secret-token
+    ```
+  - 示例：
+    ```bash
+    HTTP_API_TOKEN=my-secret-key node index-sse.js
+    ```
+  - 未设置时，服务允许匿名访问

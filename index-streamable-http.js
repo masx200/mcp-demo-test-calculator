@@ -73,12 +73,40 @@ function factory() {
 
 const app = express();
 app.use(express.json());
+app.use(authenticateToken);
+// Token验证中间件
+const authenticateToken = (req, res, next) => {
+  const token = process.env.HTTP_API_TOKEN;
+  if (!token) {
+    return next(); // 未设置token，允许匿名访问
+  }
+
+  const authHeader = req.headers["authorization"];
+  const bearerToken = authHeader && authHeader.split(" ")[1];
+
+  if (
+    !authHeader.startsWith("Bearer ") ||
+    !bearerToken ||
+    bearerToken !== token
+  ) {
+    return res.status(401).json({
+      jsonrpc: "2.0",
+      error: {
+        code: -32001,
+        message: "Unauthorized: Invalid or missing token",
+      },
+      id: null,
+    });
+  }
+
+  next();
+};
 
 // Map to store transports by session ID
 const transports = new Map();
 
 // Handle POST requests for client-to-server communication
-app.post("/mcp", async (req, res) => {
+app.post("/mcp", authenticateToken, async (req, res) => {
   // Check for existing session ID
   const sessionId = req.headers["mcp-session-id"];
   let transport;
@@ -141,10 +169,10 @@ const handleSessionRequest = async (req, res) => {
 };
 
 // Handle GET requests for server-to-client notifications via SSE
-app.get("/mcp", handleSessionRequest);
+app.get("/mcp", authenticateToken, handleSessionRequest);
 
 // Handle DELETE requests for session termination
-app.delete("/mcp", handleSessionRequest);
+app.delete("/mcp", authenticateToken, handleSessionRequest);
 
 // Start the server
 const PORT = process.env.HTTP_API_PORT || 3000;
@@ -156,4 +184,13 @@ app.listen(PORT, (err) => {
     `MCP calculator streamable HTTP server listening on http://localhost:${PORT}`,
   );
   console.log(`MCP endpoint: http://localhost:${PORT}/mcp`);
+
+  const token = process.env.HTTP_API_TOKEN;
+  if (token) {
+    console.log("HTTP API token authentication enabled,token:", token);
+  } else {
+    console.log(
+      "HTTP API token authentication disabled (anonymous access allowed)",
+    );
+  }
 });
