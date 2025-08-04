@@ -22,7 +22,7 @@ function factory() {
     },
     async ({ a, b }) => ({
       content: [{ type: "text", text: String(a + b) }],
-    })
+    }),
   );
 
   server.registerTool(
@@ -34,7 +34,7 @@ function factory() {
     },
     async ({ a, b }) => ({
       content: [{ type: "text", text: String(a - b) }],
-    })
+    }),
   );
 
   server.registerTool(
@@ -46,7 +46,7 @@ function factory() {
     },
     async ({ a, b }) => ({
       content: [{ type: "text", text: String(a * b) }],
-    })
+    }),
   );
 
   server.registerTool(
@@ -66,7 +66,7 @@ function factory() {
       return {
         content: [{ type: "text", text: String(a / b) }],
       };
-    }
+    },
   );
   return server;
 }
@@ -185,7 +185,7 @@ app.listen(PORT, (err) => {
   if (err) return console.error("Failed to start HTTP server:", err);
 
   console.log(
-    `MCP calculator streamable HTTP server listening on http://localhost:${PORT}`
+    `MCP calculator streamable HTTP server listening on http://localhost:${PORT}`,
   );
   console.log(`MCP endpoint: http://localhost:${PORT}/mcp`);
 
@@ -194,7 +194,7 @@ app.listen(PORT, (err) => {
     console.log("HTTP API token authentication enabled,token:", token);
   } else {
     console.log(
-      "HTTP API token authentication disabled (anonymous access allowed)"
+      "HTTP API token authentication disabled (anonymous access allowed)",
     );
   }
 });

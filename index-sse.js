@@ -71,7 +71,7 @@ function factory() {
             break;
         }
         return { content: [{ type: "text", text: String(result) }] };
-      }
+      },
     );
 
   defineCalcTool("add", "+");
@@ -121,7 +121,7 @@ app.listen(PORT, (err) => {
     console.log("HTTP API token authentication enabled,token:", token);
   } else {
     console.log(
-      "HTTP API token authentication disabled (anonymous access allowed)"
+      "HTTP API token authentication disabled (anonymous access allowed)",
     );
   }
 });
